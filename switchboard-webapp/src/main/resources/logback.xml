@@ -1,0 +1,20 @@
+<configuration>
+
+    <contextName>zookeeper</contextName>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%date [%thread] [%X{request}] %-5level %logger{20} - %msg%n%xException{10}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- this is a workaround to prevent:
+     "WARN  org.apache.commons.httpclient.HttpMethodBase - Going to buffer response body of large or unknown size. Using getResponseBodyAsStream instead is recommended."
+     review whether this is needed when we upgrade to httpclient 4.0 -->
+    <logger name="org.apache.commons.httpclient.HttpMethodBase" level="DEBUG"/>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+</configuration>

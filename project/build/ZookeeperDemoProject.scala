@@ -6,21 +6,34 @@ class ZookeeperDemoProject(info: ProjectInfo) extends DefaultProject(info) {
   lazy val switchboardWebapp = project("switchboard-webapp", "switchboard-webapp", new SwitchboardWebapp(_))
   lazy val zookeeper = project("zookeeper", "zookeeper", new Zookeeper(_))
 
-  class Server(info: ProjectInfo) extends DefaultProject(info) {
+  class Server(info: ProjectInfo) extends DefaultProject(info) with Logback{
+    override def ivyXML =
+      <dependencies>
+        <exclude module="log4j"/>
+        <exclude module="slf4j-log4j12"/>
+      </dependencies>
   }
 
-  class SwitchboardWebapp(info: ProjectInfo) extends DefaultWebProject(info) with Lift with Jetty{
+  class SwitchboardWebapp(info: ProjectInfo) extends DefaultWebProject(info) with Lift with Jetty with Logback{
+    val zookeeperDep = "org.apache.zookeeper" % "zookeeper" % "3.3.2" withSources ()
+    override def ivyXML =
+      <dependencies>
+        <exclude artifact="jms"/>
+        <exclude artifact="jmxtools"/>
+        <exclude artifact="jmxri"/>
+        <exclude module="log4j"/>
+        <exclude module="slf4j-log4j12"/>
+      </dependencies>
+
   }
 
   class Zookeeper(info: ProjectInfo) extends DefaultProject(info) {
     val zookeeperDep = "org.apache.zookeeper" % "zookeeper" % "3.3.2" withSources ()
     override def ivyXML =
       <dependencies>
-        <dependency org="org.apache.zookeeper" name="zookeeper" rev="3.3.2">
-          <exclude artifact="jms"/>
-          <exclude artifact="jmxtools"/>
-          <exclude artifact="jmxri"/>
-        </dependency>
+        <exclude artifact="jms"/>
+        <exclude artifact="jmxtools"/>
+        <exclude artifact="jmxri"/>
       </dependencies>
 
     override def mainClass = Some("org.apache.zookeeper.server.quorum.QuorumPeerMain")
@@ -41,5 +54,11 @@ class ZookeeperDemoProject(info: ProjectInfo) extends DefaultProject(info) {
     val jetty7 = "org.eclipse.jetty" % "jetty-webapp" % "7.0.2.v20100331" % "test"
   }
 
+  trait Logback extends BasicScalaProject {
+    val SLF4J_VERSION = "1.6.0"
 
+    val log4jOverSlf4j = "org.slf4j" % "log4j-over-slf4j" % SLF4J_VERSION withSources()
+    val slf4jApi = "org.slf4j" % "slf4j-api" % SLF4J_VERSION withSources()
+    val logback = "ch.qos.logback" % "logback-classic" % "0.9.24" withSources()
+  }
 }

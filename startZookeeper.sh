@@ -1,1 +1,2 @@
-sbt "project zookeeper" "run 2182 ./data 1000"
+sbt "project zookeeper" "run 2181 ./target/zookeeper-data 1000"
+
