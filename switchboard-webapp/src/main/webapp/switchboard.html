@@ -1,9 +1,32 @@
 <lift:surround with="default" at="content">
-  <h2>Welcome to your project!</h2>
+  <h2>Switch Board</h2>
+  <style type="text/css">
+      li {
+        width: 200px;
+        list-style-type:none;
+        margin:2px;
+        padding:5px;
+      }
+      div {
+        width:100px;
+        display:inline;
+      }
+      button {
+        left:100px;
+        position:relative;
+
+      }
+      li.on {
+        background-color:green;
+      }
+      li.off {
+        background-color:red;
+      }
+  </style>
   <lift:comet type="Switchboard">
     <ul>
       <switchboard:switches>
-        <li><switchboard:name /><switchboard:button /></li>
+        <li><div><switchboard:name /> </div><div><switchboard:button /></div></li>
       </switchboard:switches>
     </ul>
   </lift:comet>
