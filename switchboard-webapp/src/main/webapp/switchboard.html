@@ -1,4 +1,10 @@
 <lift:surround with="default" at="content">
   <h2>Welcome to your project!</h2>
-  <lift:comet type="Switchboard" />
+  <lift:comet type="Switchboard">
+    <ul>
+      <switchboard:switches>
+        <li><switchboard:name /><switchboard:button /></li>
+      </switchboard:switches>
+    </ul>
+  </lift:comet>
 </lift:surround>

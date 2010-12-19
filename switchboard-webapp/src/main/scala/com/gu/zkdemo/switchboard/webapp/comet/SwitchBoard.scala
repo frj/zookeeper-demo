@@ -5,6 +5,7 @@ import http._
 import actor._
 import com.gu.zkdemo.switchboard.{Logging, Switch}
 import js.{JE, JsCmds}
+import xml.NodeSeq
 
 object SwitchboardServer extends LiftActor with ListenerManager {
   var switches = List[Switch]()
@@ -32,33 +33,29 @@ class Switchboard extends CometActor with CometListener with Logging {
   }
 
   def render = {
-    <div>
-      <lift:form>
-        <ul>
-        {
-          SwitchboardServer.switches map {
-            switch =>
-              <li>
-                <b>{switch.name}</b>
-                {
-                  val currentValue = switch.value
-                  val newValue = switch.value match {
-                    case "on" => "off"
-                    case "off" => "on"
-                  }
-
-                  log.info(switch.name + " currentValue " + currentValue)
-
-                  SHtml.ajaxButton(currentValue, () => {
-                    switch.changeValue(newValue);
-                    JsCmds._Noop
-                  })
+    bind(
+      "switchboard",
+      "switches" -> {
+        xml:NodeSeq =>
+          SwitchboardServer.switches flatMap { switch =>
+            bind(
+              "switchboard",
+              xml,
+              "name" -> switch.name,
+              "button" -> {
+                val currentValue = switch.value
+                val newValue = switch.value match {
+                  case "on" => "off"
+                  case "off" => "on"
                 }
-              </li>
-          }
-        }
-        </ul>
-      </lift:form>
-    </div>
+
+                SHtml.ajaxButton(currentValue, () => {
+                  switch.changeValue(newValue);
+                  JsCmds._Noop
+              })}
+            )
+          } : NodeSeq
+      }
+    )
   }
 }
